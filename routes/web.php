@@ -27,3 +27,18 @@ Route::delete('/home/{id}', [userController::class, 'destroy'])->name('post.dele
 
 Route::get('/update/{id}', [userController::class, 'edit'])->name('post.edit');
 Route::put('/update/{id}', [userController::class, 'update'])->name('post.update');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [userController::class, 'index'])->name('home');
+Auth::routes();
+Route::post('/custom-login', [userController::class, 'login'])->name('custom.login');
+
+Route::get('/register',function (){
+    return view('auth.register');
+});
+Route::post('/custom-register', [userController::class, 'storer'])->name('custom.register');
+Route::get('/login1',function (){
+   return view('components.login1');
+});

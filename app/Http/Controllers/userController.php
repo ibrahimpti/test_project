@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\post;
 use Illuminate\Http\Request;
+use App\Models\admin;
 
 class userController extends Controller
 {
@@ -66,6 +67,43 @@ class userController extends Controller
         $post->save();
 
         return redirect('/home')->with('success', 'Post updated successfully');
+    }
+
+    public function storer(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'password' => 'required'
+        ]);
+
+        $admin = new admin();
+        $admin->name = $validatedData['name'];
+        $admin->password = $validatedData['password'];
+
+        if ($admin->save()) {
+            return redirect()->route('login')->with('success', 'Registration successful');
+        } else {
+            return redirect()->back()->with('error', 'Failed to register');
+        }
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'user' => 'required',
+            'password' => 'required'
+        ]);
+
+        $admin = admin::where('name', $credentials['user'])->first();
+
+        if ($admin && password_verify($credentials['password'], $admin->password)) {
+            // Authentication successful
+            return redirect()->route('home')->with('success', 'Logged in successfully');
+
+        } else {
+            // Invalid credentials
+            return redirect()->back()->with('error', 'Invalid login credentials');
+        }
     }
 
 
